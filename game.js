@@ -93,31 +93,62 @@ class Car {
     return hit;
   }
 
-  Move(v, direction) {
-    if (v == "x") {
-      const step = canvas.width / 3;
-      // Moving on x
-      if (direction == "left") {
-        if (this.x < 130) {
-          return;
-        } else {
-          this.x -= step;
-        }
-      }
-      if (direction == "right") {
-        this.x += step;
-      }
+  // Move(v, direction) {
+  //   if (v == "x") {
+  //     const step = canvas.width / 3;
+  //     // Moving on x
+  //     if (direction == "left") {
+  //       if (this.x < 130) {
+  //         return;
+  //       } else {
+  //         this.x -= step;
+  //       }
+  //     }
+  //     if (direction == "right") {
+  //       this.x += step;
+  //     }
 
-      // Rolling back the changes if the car left the screen
-      if (this.x + this.image.width * scale > canvas.width) {
-        this.x -= step;
-      }
+  //     // Rolling back the changes if the car left the screen
+  //     if (this.x + this.image.width * scale > canvas.width) {
+  //       this.x -= step;
+  //     }
 
-      if (this.x < 0) {
-        this.x = 0;
-      }
-    }
-  }
+  //     if (this.x < 0) {
+  //       this.x = 0;
+  //     }
+  //   }
+  // }
+	Move(v, direction, speedMultiplier = 6) {
+		if (v == "x" && !this.isAnimating) {
+			this.isAnimating = true;
+	
+			const targetX = (direction == "left") ? Math.max(0, this.x - canvas.width / 3) :
+																							 Math.min(canvas.width - this.image.width * scale, this.x + canvas.width / 3);
+	
+			// Check if the car is in the extreme lanes
+			if ((this.x <= 130 && direction == "left") || (this.x + this.image.width * scale > canvas.width*0.8 && direction == "right")) {
+				this.isAnimating = false;
+				return;
+			}
+	
+			const step = (targetX - this.x > 0) ? canvas.width / 200 * speedMultiplier : -canvas.width / 200 * speedMultiplier;
+	
+			const move = () => {
+				if ((direction == "left" && this.x > targetX) || (direction == "right" && this.x < targetX)) {
+					this.x += step;
+	
+					if ((direction == "left" && this.x <= targetX) || (direction == "right" && this.x >= targetX)) {
+						this.x = targetX;
+						this.isAnimating = false;
+					} else {
+						requestAnimationFrame(move);
+					}
+				}
+			};
+	
+			move();
+		}
+	}
 }
 
 class Coin {
