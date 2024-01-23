@@ -300,7 +300,7 @@ function generateCoin() {
         new Coin(
           "images/coin.png",
           coinX,
-          RandomInteger(250, 1500) * -1
+          RandomInteger(250, 400) * -1
         )
       );
     
