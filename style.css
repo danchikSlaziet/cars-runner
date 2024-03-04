@@ -1,7 +1,13 @@
 @font-face{
-  font-family: "Courier New";
-  src: url("./fonts/CourierNewPSMT.woff2") format('woff2'), url("./fonts/CourierNewPSMT.woff") format('woff');
-  font-weight: 500;
+  font-family: "TT";
+  src: url("./fonts/TTRuns.ttf") format('ttf'), url("./fonts/TTRuns.woff") format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face{
+  font-family: "TT";
+  src: url("./fonts/TTRuns-Regular.ttf") format('ttf'), url("./fonts/TTRuns-Regular.woff") format('woff');
+  font-weight: 400;
   font-style: normal;
 }
 
@@ -11,8 +17,8 @@ body, html
 	height: 100%;
 	padding: 0px;
 	margin: 0px;
-	overflow: hidden;
-	font-family: 'Courier New', Courier, monospace;
+	overflow-x: hidden;
+	font-family: 'TT', sans-serif;
 }
 
 .wrapper
@@ -20,13 +26,14 @@ body, html
 	position: relative;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
 
 .canvas
 {
 	width: 100%;
 	height: 100%;
-	background: #000;
+	background: #FFF;
 }
 
 .pause {
@@ -82,7 +89,7 @@ body, html
 	outline: none;
 	padding: 5px 15px;
 	transition: opacity .24s linear;
-	font-family: 'Courier New', Courier, monospace;
+	font-family: 'TT', sans-serif;
 	font-size: 20px;
 }
 
@@ -138,7 +145,7 @@ body, html
 	outline: none;
 	padding: 5px 15px;
 	transition: opacity .24s linear;
-	font-family: 'Courier New', Courier, monospace;
+	font-family: 'TT', sans-serif;
 	font-size: 20px;
 }
 
@@ -183,7 +190,7 @@ body, html
 	outline: none;
 	padding: 5px 15px;
 	transition: opacity .24s linear;
-	font-family: 'Courier New', Courier, monospace;
+	font-family: 'TT', sans-serif;
 	font-size: 20px;
 }
 .restart-page__btn:hover {
@@ -194,14 +201,384 @@ body, html
 .arrow-btn {
 	position: absolute;
 	bottom: 0;
-	width: 100px;
+	width: 180px;
+	height: 180px;
+	z-index: 90;
 }
 
 .arrow-btn_left {
 	left: 0;
-	transform: rotate(180deg);
 }
 
 .arrow-btn_right {
 	right: 0;
+}
+
+.first-page {
+	position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility .24s, opacity .24s linear;
+	background-color: #FFF;
+	box-sizing: border-box;
+	padding: 0 17px;
+	display: flex;
+	flex-direction: column;
+}
+.first-page_active {
+	visibility: visible;
+  opacity: 1;
+}
+.first-page__red-round {
+	position: absolute;
+	width: 445px;
+	height: 452px;
+	border-radius: 50%;
+	background-color: #E91B1A;
+	top: -120px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: -1;
+}
+.first-page__logo {
+	margin-top: 23px;
+	width: 236px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	margin-bottom: 20px;
+}
+.first-page__basket {
+	width: 239px;
+	margin-bottom: 1px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+.first-page__text {
+	margin: 0;
+	margin-bottom: 16px;
+	color: #000;
+	font-family: "TT";
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 23px;
+	letter-spacing: 0em;
+	text-align: center;
+	margin-top: auto;
+}
+.first-page__subtext {
+	color: #000;
+	margin: 0;
+	margin-bottom: 14px;
+	font-family: "TT";
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 15px;
+	letter-spacing: 0em;
+	text-align: center;
+}
+.first-page__button {
+	color: #FFF;
+	font-family: "TT";
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 15px;
+	letter-spacing: 0em;
+	text-align: center;
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 36px;
+	border: none;
+	outline: none;
+	background: #E91B1A;
+	border: 1px solid #FFFFFF21;
+	padding: 17px 7px;
+	width: 100%;
+	border-radius: 18px;
+	margin-top: auto;
+}
+.first-page__button:hover {
+	cursor: pointer;
+}
+
+
+.top-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 80px;
+	background-color: #E91B1A;
+	z-index: 90;
+	border-radius: 0 0 30px 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.top-bar__exit {
+	width: 50px;
+	margin-right: auto;
+	margin-left: 20px;
+}
+.top-bar__score-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #FFFFFF26;
+	border-radius: 12px;
+	border: 1px solid #FFFFFF21;
+	gap: 4px;
+	padding: 15px;
+	margin: 0 auto;
+}
+.top-bar__score {
+	color: #FFF;
+	margin: 0;
+	font-family: "TT";
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 22px;
+	letter-spacing: 0em;
+	text-align: right;
+}
+.top-bar__score-coin {
+	width: 19px;
+	padding-bottom: 3px;
+}
+.top-bar__lifes {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #FFFFFF0D;
+	border-radius: 12px;
+	border: 1px solid #FFFFFF21;
+	gap: 2px;
+	padding: 16px 10px;
+	margin-right: 21px;
+}
+.top-bar__life {
+	width: 21px;
+}
+.tob-bar__life_dead {
+	opacity: .2;
+	animation: do-levitation-y 1s alternate ease-in-out;
+}
+@keyframes do-levitation-y {
+	0% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-5px);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
+.info-page {
+	position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.5);
+  visibility: hidden;
+  opacity: 0;
+  z-index: 101;
+  transition: visibility .24s, opacity .24s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.info-page_active {
+	visibility: visible;
+  opacity: 1;
+}
+.info-page__content {
+	position: relative;
+	background: #FFFFFF;
+	border: 1px solid #FFFFFF24;
+	border-radius: 25px;
+	padding: 122px 16px 22px 16px;
+	box-sizing: border-box;
+	max-width: 280px;
+}
+.info-page__img {
+	position: absolute;
+	width: 174px;
+	object-fit: cover;
+	top: -125px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.info-page__text {
+	margin: 0;
+	color: #000;
+	font-family: "TT";
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 23px;
+	letter-spacing: 0em;
+	text-align: center;
+	margin-bottom: 9px;
+}
+.info-page__subtext {
+	margin: 0;
+	margin-bottom: 22px;
+	color: #464545;
+	font-family: "TT";
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 15px;
+	letter-spacing: 0em;
+	text-align: center;
+}
+.info-page__button {
+	border: none;
+	outline: none;
+	width: 100%;
+	border: 1px solid #FFFFFF21;
+	background-color: #F01100;
+	padding: 17px 7px;
+	color: #FFF;
+	font-family: "TT";
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 15px;
+	letter-spacing: 0em;
+	text-align: center;
+	border-radius: 18px;
+}
+.info-page__button:hover {
+	cursor: pointer;
+}
+
+.end-page {
+	position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.5);
+  visibility: hidden;
+  opacity: 0;
+  z-index: 101;
+  transition: visibility .24s, opacity .24s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.end-page_active {
+	visibility: visible;
+  opacity: 1;
+}
+.end-page__content {
+	position: relative;
+	background: #FFFFFF;
+	box-sizing: border-box;
+	border: 1px solid #FFFFFF24;
+	border-radius: 25px;
+	padding: 100px 15px 22px 15px;
+	width: 280px;
+}
+.end-page__img {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 219px;
+	top: -125px;
+}
+.end-page__text {
+	margin: 0;
+	color: #000;
+	font-family: "TT";
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 23px;
+	letter-spacing: 0em;
+	text-align: center;
+	margin-bottom: 17px;
+}
+.end-page__score-block {
+	display: flex;
+	gap: 9px;
+	justify-content: center;
+	margin-bottom: 17px;
+}
+.end-page__count-block {
+	border: 1px solid #E7E7E7;
+	border-radius: 25px;
+	padding: 15px;
+	width: 50%;
+	flex-shrink: 0;
+	box-sizing: border-box;
+}
+.end-page__count-text {
+	margin: 0;
+	margin-bottom: 10px;
+	color: #00000099;
+	font-family: "TT";
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 15px;
+	letter-spacing: 0em;
+	text-align: center;
+}
+.end-page__count {
+	margin: 0;
+	color: #F01100;
+	font-family: "TT";
+	font-size: 25px;
+	font-weight: 700;
+	line-height: 32px;
+	letter-spacing: 0em;
+	text-align: center;
+}
+.end-page__count_best {
+}
+.end-page__restart-btn {
+	width: 100%;
+	outline: none;
+	border: none;
+	border-radius: 18px;
+	border: 1px solid #FFFFFF21;
+	background: #F01100;
+	padding: 17px 7px;
+	color: #FFF;
+	font-family: "TT";
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 15px;
+	letter-spacing: 0em;
+	text-align: center;
+	text-transform: uppercase;
+}
+.end-page__restart-btn:hover {
+	cursor: pointer;
+}
+.end-page__exit-btn {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: 60px;
+	width: 185px;
+	outline: none;
+	border: none;
+	border: 1px solid #FFFFFF6E;
+	border-radius: 25px;
+	background: #FFFFFF4A;
+	padding: 13px 7px;
+	color: #FFF;
+	font-family: "TT";
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 18px;
+	letter-spacing: 0em;
+	text-align: center;
 }

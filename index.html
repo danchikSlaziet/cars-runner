@@ -4,12 +4,74 @@
 		<title>Runner</title>
 		<link rel="stylesheet" href="style.css">
 		<meta charset="utf-8">
-		<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="HandheldFriendly" content="true"/>
 	</head>
 	<body>
+		<div class="top-bar">
+			<img onclick="window.location.href='../../index.html'" class="top-bar__exit" src="./images/exit-arrow.svg" alt="">
+			<div class="top-bar__score-wrapper">
+				<p class="top-bar__score">
+					14761
+				</p>
+				<img class="top-bar__score-coin" src="./images/score-coin.svg" alt="">
+			</div>
+			<div class="top-bar__lifes">
+				<img class="top-bar__life" src="./images/top-bar-life.svg" alt="">
+				<img class="top-bar__life" src="./images/top-bar-life.svg" alt="">
+				<img class="top-bar__life" src="./images/top-bar-life.svg" alt="">
+			</div>
+		</div>
+		<div class="end-page">
+			<div class="end-page__content">
+				<img class="end-page__img" src="./images/end-page-img.svg" alt="">
+				<p class="end-page__text">
+					Игра окончена
+				</p>
+				<div class="end-page__score-block">
+					<div class="end-page__count-block">
+						<p class="end-page__count-text">Счёт</p>
+						<p class="end-page__count end-page__count_current"></p>
+					</div>
+					<div class="end-page__count-block">
+						<p class="end-page__count-text">Лучший&nbsp;счет</p>
+						<p class="end-page__count end-page__count_best"></p>
+					</div>
+				</div>
+				<button class="end-page__restart-btn" type="button">Заново</button>
+			</div>
+			<button onclick="window.location.href='../../index.html'" class="end-page__exit-btn" type="button">Выйти из игры</button>
+		</div>
+		<div class="info-page">
+			<div class="info-page__content">
+				<img src="./images/obstacle-1.png" class="info-page__img" alt="">
+				<p class="info-page__text">
+					Не ходите<br>по помытому
+				</p>
+				<p class="info-page__subtext">
+					А&nbsp;также избегайте столкновения с&nbsp;корзинками и&nbsp;тележками
+				</p>
+				<button class="info-page__button" type="button">
+					Продолжить
+				</button>
+			</div>
+		</div>
+		<div class="first-page first-page_active">
+			<div class="first-page__red-round"></div>
+			<img class="first-page__logo" src="./images/first-page-logo.svg" alt="">
+			<img class="first-page__basket" src="./images/first-page-basket.svg" alt="">
+			<p class="first-page__text">
+				Гости придут<br>с минуты на минуту
+			</p>
+			<p class="first-page__subtext">
+				Собери все продукты, чтобы приготовить ужин к&nbsp;приходу гостей<br><br>Остерегайся оставленных тележек, корзинок и&nbsp;всяких штук
+			</p>
+			<button type="button" class="first-page__button">
+				За продуктами
+			</button>
+		</div>
 		<div class="wrapper">
 			<img class="pause" src="./images/pause.png" alt="pause">
 			<p class="score">Счёт: 0</p>
@@ -32,8 +94,8 @@
 					<button type="button" class="score-page__btn">Продолжить</button>
 				</div>
 			</div>
-			<img class="arrow-btn arrow-btn_left" src="./images/arrow.svg" alt="">
-			<img class="arrow-btn arrow-btn_right" src="./images/arrow.svg" alt="">
+			<div class="arrow-btn arrow-btn_left"></div>
+			<div class="arrow-btn arrow-btn_right"></div>
 			<canvas width="0" height="0" class="canvas" id="canvas">Your browser does not support JavaScript and HTML5!</canvas>
 		</div>
 		<script src="mobile-detect.min.js"></script>

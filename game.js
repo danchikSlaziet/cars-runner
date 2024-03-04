@@ -3,6 +3,8 @@ let carHeight = 512 * 0.14;
 let obstacleCount = 3;
 let coinGenerationTimeout;
 let scoreCount = 0;
+maxScore = window.localStorage.getItem("maxScore") || undefined;
+let lives = 3; // Количество жизней
 let detect = new MobileDetect(window.navigator.userAgent);
 const pauseBtn = document.querySelector('.pause');
 const pausePage = document.querySelector('.pause-page');
@@ -16,6 +18,66 @@ const scoreButton = scorePage.querySelector('.score-page__btn');
 const scorePageText = scorePage.querySelector('.score-page__text');
 const restartPage = document.querySelector('.restart-page');
 const restartButton = restartPage.querySelector('.restart-page__btn');
+
+const firstPage = document.querySelector('.first-page');
+const firstPageButton = firstPage.querySelector('.first-page__button');
+
+const infoPage = document.querySelector('.info-page');
+const infoPageImg = infoPage.querySelector('.info-page__img');
+const infoPageText = infoPage.querySelector('.info-page__text');
+const infoPageSubtext = infoPage.querySelector('.info-page__subtext');
+const infoPageButton = infoPage.querySelector('.info-page__button');
+
+const endPage = document.querySelector('.end-page');
+const endPageRestart = endPage.querySelector('.end-page__restart-btn');
+const endPageScore = endPage.querySelector('.end-page__count_current');
+const endPageMaxscore = endPage.querySelector('.end-page__count_best');
+
+infoPageButton.addEventListener('click', () => {
+  infoPage.classList.remove('info-page_active');
+  Start();
+});
+
+endPageRestart.addEventListener('click', () => {
+  endPage.classList.remove('end-page_active');
+  setTimeout(() => {
+    Restart();
+  }, 200)
+})
+
+let isFirstCollision = false;
+
+const playerImages = [
+  "./images/car.png",
+  "./images/car-setTime.png"
+];
+let currentPlayerImageIndex = 0; // Индекс текущего изображения игрока
+const playerImageObjects = playerImages.map(src => {
+  const image = new Image();
+  image.src = src;
+  return image;
+});
+function togglePlayerImage() {
+  currentPlayerImageIndex = (currentPlayerImageIndex + 1) % playerImageObjects.length;
+  player.image = playerImageObjects[currentPlayerImageIndex];
+}
+let isPlayerImagesLoaded = false;
+let playerAnimationInterval = null;
+let imagesLoaded = 0;
+playerImageObjects.forEach(image => {
+  image.addEventListener('load', () => {
+    imagesLoaded++;
+    if (imagesLoaded === playerImageObjects.length) {
+      // Все изображения загружены, начинаем переключение
+      isPlayerImagesLoaded = true;
+    }
+  });
+});
+
+firstPageButton.addEventListener('click', () => {
+  firstPage.classList.remove('first-page_active');
+  Start();
+});
 
 class Road {
   constructor(image, y) {
@@ -61,6 +123,7 @@ class Car {
     });
 
     this.image.src = image;
+    this.imageSrc = image;
   }
 
   Update() {
@@ -92,38 +155,12 @@ class Car {
 
     return hit;
   }
-
-  // Move(v, direction) {
-  //   if (v == "x") {
-  //     const step = canvas.width / 3;
-  //     // Moving on x
-  //     if (direction == "left") {
-  //       if (this.x < 130) {
-  //         return;
-  //       } else {
-  //         this.x -= step;
-  //       }
-  //     }
-  //     if (direction == "right") {
-  //       this.x += step;
-  //     }
-
-  //     // Rolling back the changes if the car left the screen
-  //     if (this.x + this.image.width * scale > canvas.width) {
-  //       this.x -= step;
-  //     }
-
-  //     if (this.x < 0) {
-  //       this.x = 0;
-  //     }
-  //   }
-  // }
 	Move(v, direction, speedMultiplier = 6) {
 		if (v == "x" && !this.isAnimating) {
 			this.isAnimating = true;
 	
-			const targetX = (direction == "left") ? Math.max(0, this.x - canvas.width / 3) :
-																							 Math.min(canvas.width - this.image.width * scale, this.x + canvas.width / 3);
+			const targetX = (direction == "left") ? Math.max(0, this.x - canvas.width / 3.5) :
+																							 Math.min(canvas.width - this.image.width * scale, this.x + canvas.width / 3.5);
 	
 			// Check if the car is in the extreme lanes
 			if ((this.x <= 130 && direction == "left") || (this.x + this.image.width * scale > canvas.width*0.8 && direction == "right")) {
@@ -203,7 +240,8 @@ var coins = [];
 var canvas = document.getElementById("canvas"); // Getting the canvas from DOM
 var ctx = canvas.getContext("2d"); // Getting the context to work with the canvas
 
-var scale = 0.13; // Cars scale
+var scale = 0.16; // Cars scale
+var obstacleScale = 0.22;
 
 Resize(); // Changing the canvas size on startup
 
@@ -236,28 +274,31 @@ if (detect.os() == null) {
 var objects = []; // Game objects
 
 var roads = [
-  new Road("images/road.png", 0),
-  new Road("images/road.png", canvas.height),
+  new Road("images/road.jpg", 0),
+  new Road("images/road.jpg", canvas.height),
 ]; // Backgrounds
 var player = new Car(
   "images/car.png",
   canvas.width / 2 - carWidth,
-  canvas.height / 2,
+  canvas.height - carHeight,
   true
 ); // Player's object
 var speed = 6;
 
-Start();
-
 var animationId;
 
 function Start() {
+  player.dead = false;
   if (!player.dead) {
     animationId = requestAnimationFrame(Update);
+    if (isPlayerImagesLoaded) {
+      playerAnimationInterval = setInterval(togglePlayerImage, 250);
+    }
   }
 }
 
 function Stop() {
+  clearInterval(playerAnimationInterval);
   cancelAnimationFrame(animationId);
   clearTimeout(obstacleGenerationTimeout);
   clearTimeout(coinGenerationTimeout);
@@ -285,14 +326,21 @@ function randomLane() {
   }
 }
 
-// ... (предыдущий код)
+function getRandomObstacle() {
+  const randomInt = Math.floor(Math.random() * 3);
+  return `./images/obstacle-${randomInt + 1}.png`;
+} 
+function getRandomCoin() {
+  const randomInt = Math.floor(Math.random() * 15);
+  return `./images/coin-${randomInt + 1}.png`;
+} 
 
 function generateObstacle() {
   if (objects.length < obstacleCount) {
     const lane = random1to3();
-    const obstacleX = (lane === 1) ? canvas.width / 6 - carWidth :
+    const obstacleX = (lane === 1) ? canvas.width / 6 - carWidth*0.85 :
                        (lane === 2) ? canvas.width / 2 - carWidth :
-                                      2 * (canvas.width / 3) + canvas.width / 6 - carWidth;
+                                      2 * (canvas.width / 3) + canvas.width / 6 - carWidth*2.3;
 
     const obstacleY = getRandomHeight();
 
@@ -302,7 +350,7 @@ function generateObstacle() {
                             Math.abs(coin.y - obstacleY) < carHeight)) {
       objects.push(
         new Car(
-          "images/car_red.png",
+          getRandomObstacle(),
           obstacleX,
           -700,
           false
@@ -317,9 +365,9 @@ function generateObstacle() {
 function generateCoin() {
   if (coins.length < obstacleCount) {
     const lane = random1to3();
-    const coinX = (lane === 1) ? canvas.width / 6 - carWidth :
+    const coinX = (lane === 1) ? canvas.width / 6 - carWidth*0.85 :
                    (lane === 2) ? canvas.width / 2 - carWidth :
-                                  2 * (canvas.width / 3) + canvas.width / 6 - carWidth;
+                                  2 * (canvas.width / 3) + canvas.width / 6 - carWidth*2.3;
 
     const coinY = getRandomHeight();
 
@@ -329,7 +377,7 @@ function generateCoin() {
                                   Math.abs(obstacle.y - coinY) < carHeight)) 
       coins.push(
         new Coin(
-          "images/coin.png",
+          getRandomCoin(),
           coinX,
           RandomInteger(250, 400) * -1
         )
@@ -350,7 +398,24 @@ function RandomInteger(min, max) {
 }
 
 var obstacleGenerationTimeout;
+let isObstacle = false;
 
+const livesArray = document.querySelectorAll(".top-bar__life");
+
+function decreaseLife() {
+  lives--;
+  livesArray[lives].classList.add('tob-bar__life_dead');
+  if (lives === 0) {
+    maxScore ? null : (maxScore = scoreCount);
+    scoreCount > maxScore ? (maxScore = scoreCount) : null;
+    window.localStorage.setItem("maxScore", maxScore);
+    endPage.classList.add('end-page_active');
+    endPageScore.textContent = scoreCount;
+    endPageMaxscore.textContent = maxScore;
+    Stop();
+    player.dead = true;
+  }
+}
 
 function Update() {
   roads[0].Update(roads[1]);
@@ -404,12 +469,33 @@ function Update() {
     hit = player.Collide(objects[i]);
 
     if (hit) {
-      Stop();
-      player.dead = true;
-			restartPage.classList.add('restart-page_active');
+      if (!isFirstCollision) {
+        Stop();
+        player.dead = true;
+        infoPage.classList.add('info-page_active');
+        if (objects[i].imageSrc.includes('obstacle-3')) {
+          infoPageImg.style = 'top: -47px';
+        }
+        if (objects[i].imageSrc.includes('obstacle-2')) {
+          infoPageImg.style = 'top: -60px';
+          infoPageText.textContent = 'Не врезайтесь в корзинку';
+          infoPageSubtext.textContent = 'А также избегайте столкновения со знаками и тележками';
+        }
+        if (objects[i].imageSrc.includes('obstacle-1')) {
+          infoPageText.textContent = 'Не врезайтесь в тележку';
+          infoPageSubtext.textContent = 'А также избегайте столкновения со знаками и корзинками';
+        }
+        infoPageImg.src = objects[i].imageSrc;
+        isFirstCollision = true;
+      }
+      decreaseLife();
+      objects.splice(i, 1);
       break;
     }
   }
+  // if (hit) {
+  //         decreaseLife();
+  // }
 
   for (let i = 0; i < coins.length; i++) {
     hit = player.Collide(coins[i]);
@@ -418,12 +504,6 @@ function Update() {
 			scoreCount++;
 			score.textContent = `Счёт: ${scoreCount}`;
       coins.splice(i, 1); // Удалить монетку при столкновении
-			if (scoreCount === 10) {
-				player.dead = true;
-				Stop();
-				scorePageText.textContent = `Поздравляю, ты собрал 10 канистр. Ускоряемся и скорее ждём тебя в уличных гонках!`;
-				scorePage.classList.add('score-page_active');
-			}
       break;
     }
   }
@@ -471,8 +551,8 @@ function DrawCar(car) {
     car.image.height,
     car.x,
     car.y,
-    car.image.width * scale,
-    car.image.height * scale
+    car === player ? car.image.width * scale : car.image.width * obstacleScale,
+    car === player ? car.image.height * scale : car.image.height * obstacleScale
   );
 }
 
@@ -504,6 +584,7 @@ function ButtonDown(side) {
 function Restart() {
 	// Сбросить счёт
   scoreCount = 0;
+  lives = 3;
   score.textContent = 'Счёт: 0';
 
   // Очистить массивы объектов
@@ -512,12 +593,15 @@ function Restart() {
 
   // Сбросить позицию игрока
   player.x = canvas.width / 2 - carWidth;
-  player.y = canvas.height / 2;
+  player.y = canvas.height - carHeight;
 
   // Сбросить флаги
   player.dead = false;
   player.paused = false;
 	speed = 6;
+  livesArray.forEach((elem) => {
+    elem.classList.remove('tob-bar__life_dead');
+  });
 
   // Запустить игру заново
   Start();
@@ -547,15 +631,6 @@ pausePageContinue.addEventListener('click', () => {
 pausePageRestart.addEventListener('click', () => {
 	Restart();
 	pausePage.classList.remove('pause-page_active');
-});
-
-scoreButton.addEventListener('click', () => {
-	scorePage.classList.remove('score-page_active');
-  setTimeout(() => {
-		speed = 13;
-		player.dead = false;
-    Start();
-  }, 200)
 });
 
 restartButton.addEventListener('click', () => {
